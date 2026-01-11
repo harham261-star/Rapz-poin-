@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rapz Poin – Top Up Game Termurah & Amanah</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0b1220;color:#e5e7eb}
+.container{max-width:520px;margin:auto;padding:15px}
+h1{text-align:center}
+.card{background:#121a2f;padding:14px;border-radius:16px;margin-bottom:14px}
+select,input{width:100%;padding:12px;margin-top:8px;border-radius:12px;border:none;background:#1e293b;color:#fff}
+.game{padding:12px;background:#1e293b;border-radius:14px;margin-top:8px;cursor:pointer}
+.game.active{background:#22c55e;color:#000;font-weight:bold}
+.product{padding:10px;background:#0f172a;border-radius:12px;margin-top:6px;cursor:pointer}
+.product.active{background:#facc15;color:#000;font-weight:bold}
+.pay{padding:12px;background:#1e293b;border-radius:12px;margin-top:6px;cursor:pointer}
+.pay.active{background:#22c55e;color:#000;font-weight:bold}
+.wa{display:block;text-align:center;background:#22c55e;color:#fff;
+padding:15px;border-radius:18px;font-size:18px;font-weight:bold;text-decoration:none}
+.notice{font-size:12px;color:#fca5a5;margin-top:8px}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>🎮 Rapz Poin<br>Top Up Game Termurah & Amanah</h1>
+
+<div class="card">
+<b>Pilih Game</b>
+<div id="games"></div>
+</div>
+
+<div class="card">
+<b>Data Akun</b>
+<input id="uid" placeholder="User ID">
+<input id="server" placeholder="Server (jika ada)">
+</div>
+
+<div class="card">
+<b>Produk</b>
+<div id="products"></div>
+</div>
+
+<div class="card">
+<b>Pembayaran</b>
+<div class="pay" onclick="pay(this,'DANA')">DANA</div>
+<div class="pay" onclick="pay(this,'GoPay')">GoPay</div>
+<div class="pay" onclick="pay(this,'OVO')">OVO</div>
+<div class="pay" onclick="pay(this,'ShopeePay')">ShopeePay</div>
+<div class="pay" onclick="pay(this,'Transfer Bank')">Transfer Bank</div>
+</div>
+
+<div class="notice">
+Order hanya via WhatsApp resmi<br>
+<b>082177929300</b><br>
+Aman & Anti Penipuan
+</div>
+
+<a class="wa" onclick="sendWA()">💬 Lanjut ke WhatsApp</a>
+</div>
+
+<script>
+let gamePick="", productPick="", payPick="";
+
+const DATA={
+"Mobile Legends":[
+"💎 5 Diamond – Rp1.000","💎 10 – Rp2.000","💎 20 – Rp4.000","💎 28 – Rp5.000",
+"💎 44 – Rp7.000","💎 59 – Rp9.000","💎 86 – Rp13.000","💎 112 – Rp17.000",
+"💎 172 – Rp25.000","💎 257 – Rp37.000","💎 344 – Rp49.000","💎 429 – Rp61.000",
+"💎 514 – Rp73.000","💎 706 – Rp99.000","💎 878 – Rp123.000",
+"💎 1050 – Rp147.000","💎 1412 – Rp199.000","💎 2195 – Rp309.000",
+"💎 3688 – Rp499.000","💎 5532 – Rp749.000"
+],
+"Free Fire":[
+"🔥 50 DM – Rp7.000","🔥 70 – Rp9.000","🔥 100 – Rp13.000","🔥 140 – Rp18.000",
+"🔥 210 – Rp27.000","🔥 355 – Rp45.000","🔥 500 – Rp63.000","🔥 720 – Rp89.000",
+"🔥 1000 – Rp123.000","🔥 1450 – Rp179.000","🔥 2000 – Rp249.000",
+"🔥 3000 – Rp369.000","🔥 4000 – Rp489.000","🔥 5000 – Rp609.000",
+"🔥 Weekly – Rp27.000","🔥 Monthly – Rp89.000",
+"🔥 Level Up – Rp45.000","🔥 Elite Pass – Rp79.000",
+"🔥 Evo Access – Rp99.000","🔥 Evo Max – Rp149.000"
+],
+"PUBG Mobile":[
+"🪙 60 UC – Rp11.000","🪙 120 – Rp21.000","🪙 180 – Rp31.000",
+"🪙 325 – Rp55.000","🪙 385 – Rp65.000","🪙 660 – Rp109.000",
+"🪙 720 – Rp119.000","🪙 985 – Rp159.000","🪙 1320 – Rp209.000",
+"🪙 1800 – Rp289.000","🪙 2460 – Rp389.000",
+"🪙 3850 – Rp609.000","🪙 8100 – Rp1.199.000",
+"🎖 Elite Pass – Rp149.000","🎖 Elite Plus – Rp249.000",
+"🎖 Royale Pass – Rp179.000","🎖 Upgrade – Rp99.000",
+"🎖 Voucher – Rp49.000","🎖 Supply – Rp69.000","🎖 Pack – Rp89.000"
+],
+"Call of Duty Mobile":[
+"🔫 80 CP – Rp15.000","🔫 160 – Rp29.000","🔫 240 – Rp43.000",
+"🔫 420 – Rp75.000","🔫 560 – Rp99.000","🔫 880 – Rp149.000",
+"🔫 1280 – Rp209.000","🔫 1680 – Rp269.000","🔫 2400 – Rp379.000",
+"🔫 5000 – Rp769.000","🎫 Battle Pass – Rp79.000",
+"🎫 BP Bundle – Rp129.000","🎫 Crate – Rp39.000","🎫 Draw – Rp59.000",
+"🎫 Token – Rp25.000","🎫 Supply – Rp49.000",
+"🎫 Event – Rp69.000","🎫 Pack – Rp89.000",
+"🎫 Premium – Rp149.000","🎫 Max – Rp199.000"
+],
+"Genshin Impact":[
+"✨ 60 Genesis – Rp15.000","✨ 300 – Rp75.000","✨ 980 – Rp249.000",
+"✨ 1980 – Rp479.000","✨ 3280 – Rp789.000","✨ 6480 – Rp1.499.000",
+"🌙 Blessing – Rp75.000","🎟 BP – Rp149.000",
+"🎟 BP Premium – Rp249.000","🎟 Pack A – Rp39.000",
+"🎟 Pack B – Rp59.000","🎟 Pack C – Rp79.000",
+"🎟 Pack D – Rp99.000","🎟 Pack E – Rp129.000",
+"🎟 Pack F – Rp159.000","🎟 Pack G – Rp199.000",
+"🎟 Pack H – Rp249.000","🎟 Pack I – Rp299.000",
+"🎟 Pack J – Rp349.000","🎟 Pack K – Rp399.000"
+]
+};
+
+const gamesDiv=document.getElementById("games");
+const productsDiv=document.getElementById("products");
+
+Object.keys(DATA).forEach(g=>{
+let d=document.createElement("div");
+d.className="game";
+d.innerText=g;
+d.onclick=()=>{
+document.querySelectorAll('.game').forEach(x=>x.classList.remove('active'));
+d.classList.add('active');
+gamePick=g; loadProducts();
+};
+gamesDiv.appendChild(d);
+});
+
+function loadProducts(){
+productsDiv.innerHTML=""; productPick="";
+DATA[gamePick].forEach(p=>{
+let d=document.createElement("div");
+d.className="product";
+d.innerText=p;
+d.onclick=()=>{
+document.querySelectorAll('.product').forEach(x=>x.classList.remove('active'));
+d.classList.add('active');
+productPick=p;
+};
+productsDiv.appendChild(d);
+});
+}
+
+function pay(el,v){
+document.querySelectorAll('.pay').forEach(x=>x.classList.remove('active'));
+el.classList.add('active'); payPick=v;
+}
+
+function sendWA(){
+if(!gamePick||!productPick||!payPick||!uid.value){
+alert("Lengkapi data dulu"); return;
+}
+let msg=`ORDER RAPZ POIN
+Game: ${gamePick}
+Produk: ${productPick}
+ID: ${uid.value}
+Server: ${server.value}
+Bayar: ${payPick}`;
+window.open("https://wa.me/6282177929300?text="+encodeURIComponent(msg));
+}
+</script>
+</body>
+</html>
